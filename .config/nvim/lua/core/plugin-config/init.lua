@@ -1,0 +1,5 @@
+require("core.plugin-config.gruvbox")
+require("core.plugin-config.nvim-tree")
+require("core.plugin-config.nvim-treesitter")
+require("core.plugin-config.lsp-config")
+require("core.plugin-config.completions")

@@ -1,0 +1,10 @@
+!!  ______  _______     __
+!! / ___\ \/ /_ _\ \   / /
+!! \___ \\  / | | \ \ / /
+!!  ___) /  \ | |  \ V /
+!! |____/_/\_\___|  \_/
+
+! APPEARANCE !
+Sxiv.background: #1c1e1f
+Sxiv.foreground: #504945
+Sxiv.font: Hack Nerd Font-10
