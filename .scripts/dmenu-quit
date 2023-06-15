@@ -1,0 +1,21 @@
+#!/usr/bin/env python3
+from subprocess import run
+
+# pipe string into dmenu and return selection
+def run_dmenu(pipe, args=[]):
+    return (
+        run(["dmenu"] + args, input=pipe.encode(), capture_output=True)
+        .stdout.decode()
+        .strip()
+    )
+
+option = run_dmenu("Shutdown\nReboot\nSuspend\nQuit X11", args=["-p", "Log Out"])
+
+if option == "Shutdown":
+    run(["shutdown", "now"])
+elif option == "Reboot":
+    run(["reboot"])
+elif option == "Suspend":
+    run(["systemctl", "suspend"])
+elif option == "Quit X11":
+    run(["pkill", "dwm"])

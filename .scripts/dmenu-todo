@@ -1,0 +1,58 @@
+#!/usr/bin/env python3
+import re
+from subprocess import run
+
+todo_path = "/home/isaiah/documents/todo.txt"
+edit_cmd = ["alacritty", "-e", "nvim", todo_path]
+
+
+# read todo.txt into string
+def read_todo(path):
+    txt = ""
+    with open(path, "r") as f:
+        for line in f:
+            if line[0:2] not in ("x ", "X "):  # ignore completed todos
+                txt += line
+    return txt.strip()
+
+
+# pipe string into dmenu and return selection
+def run_dmenu(pipe, args=[]):
+    return (
+        run(["dmenu"] + args, input=pipe.encode(), capture_output=True)
+        .stdout.decode()
+        .strip()
+    )
+
+
+# find and replace string in file, then overwrite it
+def replace_in_file(old, new, path):
+    with open(path, "r") as f:
+        old_txt = f.read()
+
+    new_txt = old_txt.replace(old, new)
+
+    with open(path, "w") as f:
+        f.write(new_txt)
+
+
+todos = read_todo(todo_path)  # read todo.txt into variable
+todo = run_dmenu(pipe=todos, args=["-l", "15", "-p", "Todo"])  # get selected todo
+
+# handle actions
+if todos.find(todo) != -1:  # skip actions if selected todo does not exist
+    if todo != "":
+        action = run_dmenu(
+            pipe="Done\nEdit\nRemove", args=["-p", todo]
+        )  # get selected action
+
+        if action == "Done":
+            replace_in_file(todo, f"x {todo}", todo_path)
+        elif action == "Edit":
+            run(edit_cmd)
+        elif action == "Remove":
+            replace_in_file(todo, "", todo_path)
+else:
+    # append new todo to end of file
+    with open(todo_path, "a") as f:
+        f.write(f"{todo}\n")

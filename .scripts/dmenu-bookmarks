@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+from subprocess import run
+import webbrowser, re
+
+file = "/home/isaiah/documents/bookmarks.txt"
+
+# read bookmark file into a list of dicts
+with open(file, "r") as f:
+    bookmarks = []
+    for line in f:
+        values = re.split(" {2,}", line)
+        if len(values) != 3:
+            print("Invalid formatting in bookmarks file.")
+            exit()
+        bookmarks.append({"tag": values[0], "name": values[1], "url": values[2]})
+    bookmarks = sorted(bookmarks, key=lambda bm: bm["tag"])
+
+delimiter = " - "  # delimiter to use between tag and name
+bookmarks_str = "\n".join(
+    [str(bm["tag"] + delimiter + bm["name"]) for bm in bookmarks]
+)  # list of bookmarks as a string with each entry on its own line
+
+# selected bookmark as list (tag, name)
+dmenu_output = (
+    run(
+        ["dmenu", "-l", "15", "-i", "-p", "Bookmarks"],
+        input=bookmarks_str,
+        capture_output=True,
+        text=True,
+    )
+    .stdout.strip()
+    .split(delimiter)
+)
+
+if len(dmenu_output) == 2:
+    tag, name = dmenu_output
+    for bm in bookmarks:
+        if bm["tag"] == tag and bm["name"] == name:
+            webbrowser.open_new_tab(bm["url"])

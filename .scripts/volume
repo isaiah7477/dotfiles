@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+import argparse
+from subprocess import run
+
+parser = argparse.ArgumentParser()
+actions = ["vol+", "vol-", "toggle"]
+parser.add_argument("action", choices=actions, help="Actions")
+args: argparse.Namespace() = parser.parse_args()
+
+
+def update_dwmblocks():
+    run(["pkill", "-RTMIN+10", "dwmblocks"])
+
+
+def increase_volume(perc):
+    run(["amixer", "-D", "pulse", "sset", "Master", f"{perc}%+"])
+    update_dwmblocks()
+
+
+def decrease_volume(perc):
+    run(["amixer", "-D", "pulse", "sset", "Master", f"{perc}%-"])
+    update_dwmblocks()
+
+
+def toggle_mute():
+    run(["amixer", "-D", "pulse", "set", "Master", "1+", "toggle"])
+    update_dwmblocks()
+
+
+if args.action == actions[0]:
+    increase_volume(5)
+elif args.action == actions[1]:
+    decrease_volume(5)
+elif args.action == actions[2]:
+    toggle_mute()

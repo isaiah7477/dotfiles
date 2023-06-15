@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+from subprocess import run
+import re
+
+ICONS = ("󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂁", "󰂂", "󰁹")
+
+
+def get_battery_perc():
+    # get battery info from upower
+    devices = str(run(["upower", "-e"], capture_output=True).stdout, "utf-8")
+    path = re.search("^.*BAT.*$", devices, re.MULTILINE).group()
+    output = str(run(["upower", "-i", path], capture_output=True).stdout, "utf-8")
+
+    # filter out percent from output
+    perc = re.search("^.*percentage:.*$", output, re.MULTILINE).group()
+    perc = int(re.search("\d{1,3}", perc).group())
+    return perc
+
+
+def get_battery_icon():
+    perc = get_battery_perc()
+    index = round(perc / 10) - 1
+    if index < 0:
+        index = 0
+    return f"{ICONS[index]} {perc}%"
+
+
+print(get_battery_icon())

@@ -1,0 +1,28 @@
+rm *.diff
+git pull
+
+# Reset to version 6.2
+git reset --hard cb3f58ad06993f7ef3a7d8f61468012e2b786cab
+
+wget "https://dwm.suckless.org/patches/colorbar/dwm-colorbar-6.2.diff"
+git apply "dwm-colorbar-6.2.diff"
+
+wget "https://dwm.suckless.org/patches/tilegap/dwm-tilegap-6.2.diff"
+git apply "dwm-tilegap-6.2.diff"
+#wget "https://dwm.suckless.org/patches/uselessgap/dwm-uselessgap-6.2.diff"
+#git apply "dwm-uselessgap-6.2.diff"
+
+# Apply actualfullscreen patch
+wget "https://dwm.suckless.org/patches/actualfullscreen/dwm-actualfullscreen-20211013-cb3f58a.diff"
+git apply "dwm-actualfullscreen-20211013-cb3f58a.diff"
+
+# Apply alwayscenter patch
+wget "https://dwm.suckless.org/patches/alwayscenter/dwm-alwayscenter-20200625-f04cac6.diff"
+git apply "dwm-alwayscenter-20200625-f04cac6.diff"
+
+# Apply status2d patch
+#wget "https://dwm.suckless.org/patches/status2d/dwm-status2d-6.2.diff"
+#git apply "dwm-status2d-6.2.diff"
+#wget "https://dwm.suckless.org/patches/status2d/dwm-status2d-extrabar-6.2.diff"
+#git apply "dwm-status2d-extrabar-6.2.diff"
+

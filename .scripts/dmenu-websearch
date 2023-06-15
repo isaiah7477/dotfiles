@@ -1,0 +1,89 @@
+#!/usr/bin/env python3
+from subprocess import run
+import urllib.parse
+
+browser_cmd = ["librewolf", "--new-tab"]
+search_engines = (
+    {
+        "alias": "dd",
+        "name": "DuckDuckGo",
+        "url": "https://duckduckgo.com/?q=",
+    },
+    {
+        "alias": "mg",
+        "name": "MetaGer",
+        "url": "https://metager.org/meta/meta.ger3?eingabe=",
+    },
+    {
+        "alias": "sx",
+        "name": "SearX (ch)",
+        "url": "https://searx.namejeff.xyz/?q=",
+    },
+    {
+        "alias": "so",
+        "name": "Stack Overflow",
+        "url": "https://stackoverflow.com/search?q=",
+    },
+    {
+        "alias": "w",
+        "name": "Wikipedia (en)",
+        "url": "https://en.wikipedia.org/wiki/",
+    },
+    {
+        "alias": "i",
+        "name": "Invidious",
+        "url": "https://invidious.sethforprivacy.com/search?q=",
+    },
+    {
+        "alias": "i2",
+        "name": "Invidious",
+        "url": "https://iv.ggtyler.dev/search?q=",
+    },
+    {
+        "alias": "tv",
+        "name": "Thingiverse",
+        "url": "https://www.thingiverse.com/search?q="
+    },
+)
+
+
+# pipe string into dmenu and return selection
+def run_dmenu(pipe, args=[]):
+    return (
+        run(["dmenu"] + args, input=pipe.encode(), capture_output=True)
+        .stdout.decode()
+        .strip()
+    )
+
+
+# build search url from dmenu output
+def parse_query(query):
+    q = query.split()
+    url = None
+    # look for aliases
+    for i in search_engines:
+        if i["alias"] == q[0]:
+            url = i["url"]
+            break
+
+    if url is not None:
+        # expand alias into full engine url and concat search term
+        term = " ".join(q[1:])
+        url += urllib.parse.quote_plus(term)
+    else:
+        # use first engine in list if there is no alias in the query
+        term = query
+        url = search_engines[0]["url"] + urllib.parse.quote_plus(term)
+    return url
+
+
+# format list of search engines for dmenu
+options = ""
+for i in search_engines:
+    options += i["alias"] + " - " + i["name"] + "\n"
+
+query = run_dmenu(
+    pipe=options, args=["-l", "15", "-p", "Search"]
+)  # get query from dmenu
+
+run(browser_cmd + [parse_query(query)])  # open url in browser

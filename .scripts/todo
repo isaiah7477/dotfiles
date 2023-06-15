@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+from subprocess import run
+import re
+
+file = "/home/isaiah/documents/todo.txt"
+
+
+# read todo.txt file into string
+with open(file, "r") as f:
+    todos = f.read()
+
+dmenu_todo = run(
+    ["dmenu", "-p", "Todos", "-l", "15", "-i"],
+    input=todos,
+    capture_output=True,
+    text=True,
+).stdout.strip()
+
+if re.search(rf"{re.escape(dmenu_todo)}", todos):
+    dmenu_action = run(
+        ["dmenu", "-p", dmenu_todo, "-i"],
+        input="Mark Done\nEdit\nRemove\n",
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+
+    if dmenu_action == "Mark Done":
+        pass
+    elif dmenu_action == "Edit":
+        pass
+    elif dmenu_action == "Remove":
+        pass
