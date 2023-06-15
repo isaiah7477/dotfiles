@@ -9,19 +9,19 @@ window:
 # Font configuration
 font:
   normal:
-    family: Hack Nerd Font
+    family: Terminus
     style: Regular
 
   bold:
-    family: Hack Nerd Font
+    family: Terminus
     style: Bold
 
   italic:
-    family: Hack Nerd Font
+    family: Terminus
     style: Italic
 
   bold_italic:
-    family: Hack Nerd Font
+    family: Terminus
     style: Bold Italic
 
   size: 10
